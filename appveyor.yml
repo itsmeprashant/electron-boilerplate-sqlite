@@ -1,0 +1,31 @@
+version: 1.0.{build}-{branch}
+
+image:
+  - Visual Studio 2017
+
+platform:
+  - x64
+
+environment:
+  NODEJS_VERSION: $env:NODEJS_VERSION
+  REPO_DIR: $env:REPO_DIR
+
+
+before_build:
+  - ps: |
+      # Checkout code
+      Add-AppveyorMessage "Check out project code"
+      Install-Product node $NODEJS_VERSION
+
+build_script:
+  - ps: |
+      # Build code
+      Add-AppveyorMessage "Build code and install pre-requisites"
+      cd $env:REPO_DIR
+      npm install
+      npm run release 
+
+
+artifacts:
+  - path: ./
+    name: ${APPVEYOR_BUILD_VERSION}
